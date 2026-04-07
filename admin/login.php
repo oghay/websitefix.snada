@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['admin_user'] = $admin['username'];
                 $_SESSION['logged_in']  = true;
 
+                unset($_SESSION['flash_messages']);
                 flash('success', 'Selamat datang kembali, ' . $admin['name'] . '!');
                 redirect('index.php');
             } else {
