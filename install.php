@@ -97,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 2) {
                         image VARCHAR(255),
                         author VARCHAR(100) DEFAULT 'Admin',
                         status ENUM('draft','published') DEFAULT 'draft',
+                        category VARCHAR(50) DEFAULT '',
                         views INT DEFAULT 0,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -114,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 2) {
                         description TEXT,
                         status ENUM('pending','in_progress','completed','cancelled') DEFAULT 'pending',
                         notes TEXT,
+                        price BIGINT DEFAULT 0,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
