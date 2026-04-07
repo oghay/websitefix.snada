@@ -65,6 +65,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             update('order_milestones', $ms_data, 'id = ? AND order_id = ?', [$milestone_id, $id]);
 
+              // Auto-complete all previous milestones when one is set to in_progress or completed
+              if ($new_status === 'in_progress' || $new_status === 'completed') {
+                  // Get sort_order of the current milestone
+                  $cur_ms = fetch("SELECT sort_order FROM order_milestones WHERE id = ? AND order_id = ?", [$milestone_id, $id]);
+                  if ($cur_ms) {
+                      $cur_sort = (int)$cur_ms['sort_order'];
+                      $now_ms   = date('Y-m-d H:i:s');
+                      db()->prepare(
+                          "UPDATE order_milestones SET status = 'completed', completed_at = ? WHERE order_id = ? AND sort_order < ? AND status != 'completed'"
+                      )->execute([$now_ms, $id, $cur_sort]);
+                  }
+              }
+
             // Auto-update order status
             // If any milestone is in_progress → order in_progress
             if ($new_status === 'in_progress') {
@@ -223,12 +236,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Auto-update milestones when order is completed
                 if ($new_status === 'completed') {
                     $now = date('Y-m-d H:i:s');
-                    $pdo = getDB();
+                    $pdo = db();
                     $pdo->prepare("UPDATE order_milestones SET status = 'completed', completed_at = ? WHERE order_id = ? AND status != 'completed'")->execute([$now, $id]);
                 }
                 // Auto-reset milestones to pending when order is cancelled
                 if ($new_status === 'cancelled') {
-                    getDB()->prepare("UPDATE order_milestones SET status = 'pending', completed_at = NULL WHERE order_id = ?")->execute([$id]);
+                    db()->prepare("UPDATE order_milestones SET status = 'pending', completed_at = NULL WHERE order_id = ?")->execute([$id]);
                 }
 
                 flash('success', 'Status pesanan berhasil diperbarui.');
@@ -850,24 +863,28 @@ function updateMilestoneStatus(milestoneId, newStatus, btn) {
 }
 
     function markAllMilestonesComplete() {
-        if (!confirm('Tandai SEMUA milestone sebagai selesai?')) return;
-        const items = document.querySelectorAll('.milestone-item');
-        let done = 0;
-        items.forEach(item => {
-            const msId = item.dataset.id;
-            if (item.dataset.status !== 'completed') {
-                fetch('index.php?page=pesanan-detail&id=<?= $id ?>', {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'},
-                    body: 'csrf_token=<?= urlencode($csrf) ?>&action=update_milestone_status&milestone_id=' + msId + '&status=completed'
-                }).then(r => r.json()).then(() => {
-                    done++;
-                    if (done === items.length) location.reload();
-                });
-            } else { done++; if (done === items.length) location.reload(); }
-        });
-    }
-
+          if (!confirm("Tandai SEMUA milestone sebagai selesai?")) return;
+          var items = document.querySelectorAll(".milestone-item");
+          var total = items.length;
+          if (!total) return;
+          var done = 0;
+          items.forEach(function(item) {
+              var msId = item.dataset.id;
+              if (item.dataset.status !== "completed") {
+                  fetch(AJAX_URL, {
+                      method: "POST",
+                      headers: {"Content-Type": "application/x-www-form-urlencoded", "X-Requested-With": "XMLHttpRequest"},
+                      body: "csrf_token=" + encodeURIComponent(CSRF_TOKEN) + "&action=update_milestone_status&milestone_id=" + msId + "&status=completed"
+                  }).then(function(r) { return r.json(); }).then(function() {
+                      done++;
+                      if (done >= total) location.reload();
+                  });
+              } else {
+                  done++;
+                  if (done >= total) location.reload();
+              }
+          });
+      }
 // ---- WA Toast Notification ----
 function showWaToast(type, message) {
     var existing = document.getElementById("waToast");
