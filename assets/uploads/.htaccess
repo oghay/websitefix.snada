@@ -1,0 +1,22 @@
+# Disable PHP execution in uploads directory
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+
+# For PHP-FPM / FastCGI hosts
+<FilesMatch "\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# Only allow image files
+<FilesMatch "\.(?:jpe?g|png|gif|webp|ico)$">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+</FilesMatch>
