@@ -61,7 +61,7 @@ $flashMessages = getFlash();
 <!-- ══════════════════════════════════════════
      TOP NAVIGATION
 ══════════════════════════════════════════ -->
-<nav id="mainNav" class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary);">
+<nav id="mainNav" class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary); z-index: 1050;">
     <div class="container">
         <!-- Brand / Logo -->
         <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $siteUrl ?>/">
@@ -182,7 +182,7 @@ $flashMessages = getFlash();
         $alertClass = isset($alertMap[$msg['type']]) ? $alertMap[$msg['type']] : 'alert-info';
         ?>
         <div class="alert <?= $alertClass ?> alert-dismissible fade show shadow" role="alert">
-            <?= htmlspecialchars($msg['message']) ?>
+            <?= $msg['message'] ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endforeach; ?>
