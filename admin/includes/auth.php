@@ -12,5 +12,5 @@ if (!function_exists('isLoggedIn')) {
 
 if (!isLoggedIn()) {
     flash('error', 'Silakan login terlebih dahulu untuk mengakses halaman ini.');
-    redirect('../index.php?page=login');
+    redirect('index.php?page=login');
 }
