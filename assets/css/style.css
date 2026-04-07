@@ -823,7 +823,7 @@ img { max-width: 100%; height: auto; }
   flex-shrink: 0;
 }
 .service-detail-title { font-family: var(--font-body); font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0; }
-.service-detail-tagline { font-size: 0.82rem; opacity: 0.85; }
+.service-detail-tagline { font-size: 0.82rem; opacity: 0.85; color: rgba(255,255,255,0.9); }
 .service-detail-body {
   padding: 1.5rem 1.75rem;
 }
