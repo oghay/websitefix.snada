@@ -1833,6 +1833,7 @@ img { max-width: 100%; height: auto; }
   font-weight: 700;
   margin: 0.25rem 0 0;
   letter-spacing: 1px;
+  color: #fff;
 }
 .tracking-status-badge {
   font-size: 0.85rem;
