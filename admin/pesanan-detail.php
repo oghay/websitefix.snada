@@ -555,42 +555,34 @@ require_once ADMIN_PATH . '/includes/sidebar.php';
                                             </span>
 
                                             <!-- Status Change Buttons -->
-                                            <?php if ($ms['status'] === 'pending'): ?>
-                                            <button type="button"
-                                                    class="btn btn-xs btn-outline-info milestone-action-btn"
-                                                    data-milestone-id="<?= $ms['id'] ?>"
-                                                    data-new-status="in_progress"
-                                                    onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'in_progress', this)"
-                                                    data-bs-toggle="tooltip" title="Mulai Kerjakan">
-                                                <i class="fas fa-play"></i>
-                                            </button>
-                                            <?php elseif ($ms['status'] === 'in_progress'): ?>
-                                            <button type="button"
-                                                    class="btn btn-xs btn-outline-success milestone-action-btn"
-                                                    data-milestone-id="<?= $ms['id'] ?>"
-                                                    data-new-status="completed"
-                                                    onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'completed', this)"
-                                                    data-bs-toggle="tooltip" title="Tandai Selesai">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button type="button"
-                                                    class="btn btn-xs btn-outline-secondary milestone-action-btn"
-                                                    data-milestone-id="<?= $ms['id'] ?>"
-                                                    data-new-status="pending"
-                                                    onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'pending', this)"
-                                                    data-bs-toggle="tooltip" title="Kembalikan ke Menunggu">
-                                                <i class="fas fa-undo"></i>
-                                            </button>
-                                            <?php elseif ($ms['status'] === 'completed'): ?>
-                                            <button type="button"
-                                                    class="btn btn-xs btn-outline-secondary milestone-action-btn"
-                                                    data-milestone-id="<?= $ms['id'] ?>"
-                                                    data-new-status="in_progress"
-                                                    onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'in_progress', this)"
-                                                    data-bs-toggle="tooltip" title="Buka Kembali">
-                                                <i class="fas fa-redo"></i>
-                                            </button>
-                                            <?php endif; ?>
+                                              <?php if ($ms['status'] === 'pending'): ?>
+                                              <button type="button"
+                                                      class="btn btn-sm btn-info milestone-action-btn"
+                                                      style="font-size:12px;"
+                                                      onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'in_progress', this)">
+                                                  <i class="fas fa-play me-1"></i>Mulai Kerjakan
+                                              </button>
+                                              <?php elseif ($ms['status'] === 'in_progress'): ?>
+                                              <button type="button"
+                                                      class="btn btn-sm btn-success milestone-action-btn"
+                                                      style="font-size:12px;"
+                                                      onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'completed', this)">
+                                                  <i class="fas fa-check me-1"></i>Tandai Selesai
+                                              </button>
+                                              <button type="button"
+                                                      class="btn btn-sm btn-outline-secondary milestone-action-btn"
+                                                      style="font-size:12px;"
+                                                      onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'pending', this)">
+                                                  <i class="fas fa-undo me-1"></i>Reset
+                                              </button>
+                                              <?php elseif ($ms['status'] === 'completed'): ?>
+                                              <button type="button"
+                                                      class="btn btn-sm btn-outline-warning milestone-action-btn"
+                                                      style="font-size:12px;"
+                                                      onclick="updateMilestoneStatus(<?= $ms['id'] ?>, 'in_progress', this)">
+                                                  <i class="fas fa-redo me-1"></i>Buka Kembali
+                                              </button>
+                                              <?php endif; ?>
 
                                             <!-- Delete Milestone -->
                                             <button type="button"
