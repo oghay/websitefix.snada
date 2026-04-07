@@ -800,7 +800,7 @@ function copyTrackingCode() {
 
 function showCopiedState(btn) {
     const orig = btn.innerHTML;
-    btn.innerHTML = \'<i class="fas fa-check me-1"></i>Tersalin!\';
+    btn.innerHTML = '<i class="fas fa-check me-1"></i>Tersalin!';
     btn.classList.add("btn-success");
     btn.classList.remove("btn-light");
     setTimeout(function() {
@@ -907,7 +907,7 @@ function addMilestone() {
 
     const btn = document.querySelector("#addMilestoneModal .btn-primary");
     btn.disabled = true;
-    btn.innerHTML = \'<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...\';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
 
     const formData = new FormData();
     formData.append("csrf_token",             CSRF_TOKEN);
@@ -928,13 +928,13 @@ function addMilestone() {
         } else {
             alert("Gagal: " + (data.message || "Terjadi kesalahan."));
             btn.disabled = false;
-            btn.innerHTML = \'<i class="fas fa-plus me-1"></i>Tambah Milestone\';
+            btn.innerHTML = '<i class="fas fa-plus me-1"></i>Tambah Milestone';
         }
     })
     .catch(function(err) {
         alert("Terjadi kesalahan koneksi.");
         btn.disabled = false;
-        btn.innerHTML = \'<i class="fas fa-plus me-1"></i>Tambah Milestone\';
+        btn.innerHTML = '<i class="fas fa-plus me-1"></i>Tambah Milestone';
     });
 }
 
