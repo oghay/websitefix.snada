@@ -26,6 +26,17 @@ try {
     // DB not yet set up
 }
 
+// --- Revenue Stats ---
+$total_revenue     = 0;
+$orders_this_month = 0;
+try {
+    $r = fetch("SELECT COALESCE(SUM(price), 0) as total FROM orders WHERE status = 'completed'");
+    $total_revenue = $r ? (int)$r['total'] : 0;
+
+    $r = fetch("SELECT COUNT(*) as cnt FROM orders WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())");
+    $orders_this_month = $r ? (int)$r['cnt'] : 0;
+} catch (Exception $e) {}
+
 // --- Chart Data: Konsultasi per 6 bulan terakhir ---
 $chart_months  = [];
 $chart_data    = [];
@@ -104,6 +115,34 @@ require_once ADMIN_PATH . '/includes/sidebar.php';
                 <i class="fas fa-calendar-day me-1"></i>
                 <?= date('d F Y') ?>
             </span>
+        </div>
+    </div>
+
+    <!-- Revenue Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div style="background:linear-gradient(135deg,#065f46,#059669);border-radius:16px;padding:24px 28px;display:flex;align-items:center;gap:20px;box-shadow:0 4px 24px rgba(5,150,105,0.2);">
+                <div style="background:rgba(255,255,255,0.15);border-radius:14px;width:60px;height:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-coins fa-xl" style="color:#fff;"></i>
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:4px;">Total Pendapatan</div>
+                    <div style="font-size:26px;font-weight:800;color:#fff;line-height:1.1;">Rp <?= number_format($total_revenue, 0, ',', '.') ?></div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px;"><i class="fas fa-check-circle me-1"></i>Dari pesanan yang selesai</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div style="background:linear-gradient(135deg,#1e3a5f,#2563eb);border-radius:16px;padding:24px 28px;display:flex;align-items:center;gap:20px;box-shadow:0 4px 24px rgba(37,99,235,0.2);">
+                <div style="background:rgba(255,255,255,0.15);border-radius:14px;width:60px;height:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-shopping-bag fa-xl" style="color:#fff;"></i>
+                </div>
+                <div>
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.7);margin-bottom:4px;">Pesanan Bulan Ini</div>
+                    <div style="font-size:26px;font-weight:800;color:#fff;line-height:1.1;"><?= $orders_this_month ?> Pesanan</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px;"><a href="index.php?page=pesanan" style="color:rgba(255,255,255,0.8);text-decoration:none;">Lihat semua pesanan →</a></div>
+                </div>
+            </div>
         </div>
     </div>
 
