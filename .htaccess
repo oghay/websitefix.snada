@@ -1,0 +1,62 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Allow direct access to existing files and directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Skip admin directory (has its own routing)
+    RewriteRule ^admin(/.*)?$ - [L]
+
+    # Skip install.php
+    RewriteRule ^install\.php$ - [L]
+
+    # Frontend routing
+    RewriteRule ^$ index.php [L]
+    RewriteRule ^home/?$ index.php?page=home [L,QSA]
+    RewriteRule ^layanan/?$ index.php?page=layanan [L,QSA]
+    RewriteRule ^portofolio/?$ index.php?page=portofolio [L,QSA]
+    RewriteRule ^portofolio/([a-z0-9-]+)/?$ index.php?page=portofolio-detail&slug=$1 [L,QSA]
+    RewriteRule ^blog/?$ index.php?page=blog [L,QSA]
+    RewriteRule ^blog/([a-z0-9-]+)/?$ index.php?page=blog-detail&slug=$1 [L,QSA]
+    RewriteRule ^harga/?$ index.php?page=harga [L,QSA]
+    RewriteRule ^tentang/?$ index.php?page=tentang [L,QSA]
+    RewriteRule ^konsultasi/?$ index.php?page=konsultasi [L,QSA]
+    RewriteRule ^tracking/?$ index.php?page=tracking [L,QSA]
+
+    # Catch all — route to front controller
+    RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
+</IfModule>
+
+# Block direct access to sensitive files
+<IfModule mod_authz_core.c>
+    <Files "config.php">
+        Require all denied
+    </Files>
+</IfModule>
+
+# Block access to install.php after installation
+<IfModule mod_rewrite.c>
+    RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI} -f
+    RewriteCond %{REQUEST_URI} install\.php$
+    RewriteCond %{DOCUMENT_ROOT}/config.php -f
+    RewriteRule ^ index.php [R=302,L]
+</IfModule>
+
+# Prevent directory listing
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Block access to hidden files (.git, .env, etc.)
+<IfModule mod_rewrite.c>
+    RewriteRule (^|/)\. - [F,L]
+</IfModule>
+
+# Block access to backup and log files
+<FilesMatch "\.(sql|log|bak|old|orig|swp)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
