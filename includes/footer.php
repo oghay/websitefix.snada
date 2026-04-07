@@ -147,11 +147,6 @@ $address        = getSetting('address', '');
 </a>
 <?php endif; ?>
 
-<!-- Back to Top Button -->
-<button id="backToTop" class="back-to-top" aria-label="Kembali ke atas" title="Kembali ke atas">
-    <i class="fas fa-chevron-up"></i>
-</button>
-
 <!-- Bootstrap 5.3.3 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
