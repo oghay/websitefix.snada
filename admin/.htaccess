@@ -1,0 +1,35 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect /admin to /admin/index.php
+    RewriteRule ^$ index.php [L]
+
+    # Clean URL rewrites
+    RewriteRule ^login/?$ index.php?page=login [L,QSA]
+    RewriteRule ^logout/?$ index.php?page=logout [L,QSA]
+    RewriteRule ^dashboard/?$ index.php?page=dashboard [L,QSA]
+
+    # Pesanan (Orders)
+    RewriteRule ^pesanan/?$ index.php?page=pesanan [L,QSA]
+    RewriteRule ^pesanan/tambah/?$ index.php?page=pesanan-form [L,QSA]
+    RewriteRule ^pesanan/edit/([0-9]+)/?$ index.php?page=pesanan-form&id=$1 [L,QSA]
+    RewriteRule ^pesanan/detail/([0-9]+)/?$ index.php?page=pesanan-detail&id=$1 [L,QSA]
+
+    # Portfolio
+    RewriteRule ^portofolio/?$ index.php?page=portofolio [L,QSA]
+    RewriteRule ^portofolio/tambah/?$ index.php?page=portofolio-form [L,QSA]
+    RewriteRule ^portofolio/edit/([0-9]+)/?$ index.php?page=portofolio-form&id=$1 [L,QSA]
+
+    # Blog
+    RewriteRule ^blog/?$ index.php?page=blog [L,QSA]
+    RewriteRule ^blog/tambah/?$ index.php?page=blog-form [L,QSA]
+    RewriteRule ^blog/edit/([0-9]+)/?$ index.php?page=blog-form&id=$1 [L,QSA]
+
+    # Konsultasi
+    RewriteRule ^konsultasi/?$ index.php?page=konsultasi [L,QSA]
+    RewriteRule ^konsultasi/detail/([0-9]+)/?$ index.php?page=konsultasi-detail&id=$1 [L,QSA]
+
+    # Settings & Export
+    RewriteRule ^pengaturan/?$ index.php?page=pengaturan [L,QSA]
+    RewriteRule ^export/?$ index.php?page=export [L,QSA]
+</IfModule>
