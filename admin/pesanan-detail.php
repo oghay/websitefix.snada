@@ -771,10 +771,10 @@ require_once ADMIN_PATH . '/includes/sidebar.php';
 </div>
 
 <?php
-$extra_js = '
+ob_start(); ?>
 <script>
-const CSRF_TOKEN  = ' . json_encode($csrf) . ';
-const ORDER_ID    = ' . $id . ';
+const CSRF_TOKEN  = <?= json_encode($csrf) ?>;
+const ORDER_ID    = <?= $id ?>;
 const AJAX_URL    = "index.php?page=pesanan-detail&id=" + ORDER_ID;
 
 // ---- Copy Tracking Code ----
@@ -973,6 +973,7 @@ document.getElementById("addMilestoneModal").addEventListener("hidden.bs.modal",
     document.getElementById("newMilestoneDescription").value = "";
 });
 </script>
-';
+<?php
+$extra_js = ob_get_clean();
 require_once ADMIN_PATH . '/includes/footer.php';
 ?>
