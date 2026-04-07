@@ -7,13 +7,14 @@ $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $is_edit = $id > 0;
 $errors = [];
 $post = [
-    'title'   => '',
-    'slug'    => '',
-    'excerpt' => '',
-    'content' => '',
-    'image'   => '',
-    'author'  => $_SESSION['admin_name'] ?? 'Admin',
-    'status'  => 'draft',
+    'title'    => '',
+    'slug'     => '',
+    'excerpt'  => '',
+    'content'  => '',
+    'image'    => '',
+    'author'   => $_SESSION['admin_name'] ?? 'Admin',
+    'status'   => 'draft',
+    'category' => '',
 ];
 
 // Load existing post for edit
@@ -38,11 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('index.php?page=blog' . ($is_edit ? '-form&id=' . $id : ''));
     }
 
-    $post['title']   = sanitize($_POST['title'] ?? '');
-    $post['excerpt'] = sanitize($_POST['excerpt'] ?? '');
-    $post['content'] = $_POST['content'] ?? ''; // Allow HTML
-    $post['author']  = sanitize($_POST['author'] ?? 'Admin');
-    $post['status']  = sanitize($_POST['status'] ?? 'draft');
+    $post['title']    = sanitize($_POST['title'] ?? '');
+    $post['excerpt']  = sanitize($_POST['excerpt'] ?? '');
+    $post['content']  = $_POST['content'] ?? ''; // Allow HTML
+    $post['author']   = sanitize($_POST['author'] ?? 'Admin');
+    $post['status']   = sanitize($_POST['status'] ?? 'draft');
+    $post['category'] = sanitize($_POST['category'] ?? '');
     $post['slug']    = slugify($post['title']);
 
     // Validate
@@ -93,12 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $data = [
-                'title'   => $post['title'],
-                'slug'    => $post['slug'],
-                'excerpt' => $post['excerpt'],
-                'content' => $post['content'],
-                'author'  => $post['author'],
-                'status'  => $post['status'],
+                'title'    => $post['title'],
+                'slug'     => $post['slug'],
+                'excerpt'  => $post['excerpt'],
+                'content'  => $post['content'],
+                'author'   => $post['author'],
+                'status'   => $post['status'],
+                'category' => $post['category'],
             ];
 
             if ($image_changed) {
@@ -285,6 +288,20 @@ Contoh:
                         </h5>
                     </div>
                     <div class="admin-card-body">
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label class="form-label" for="category">Kategori</label>
+                            <select id="category" name="category" class="form-select">
+                                <option value="" <?= $post['category'] === '' ? 'selected' : '' ?>>-- Pilih Kategori --</option>
+                                <option value="tips" <?= $post['category'] === 'tips' ? 'selected' : '' ?>>Tips & Trik</option>
+                                <option value="tutorial" <?= $post['category'] === 'tutorial' ? 'selected' : '' ?>>Tutorial</option>
+                                <option value="berita" <?= $post['category'] === 'berita' ? 'selected' : '' ?>>Berita & Update</option>
+                                <option value="panduan" <?= $post['category'] === 'panduan' ? 'selected' : '' ?>>Panduan OJS</option>
+                                <option value="indeksasi" <?= $post['category'] === 'indeksasi' ? 'selected' : '' ?>>Indeksasi Jurnal</option>
+                                <option value="lainnya" <?= $post['category'] === 'lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                            </select>
+                        </div>
+
                         <!-- Status -->
                         <div class="mb-3">
                             <label class="form-label" for="status">Status</label>
