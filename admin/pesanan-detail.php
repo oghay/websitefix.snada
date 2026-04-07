@@ -219,6 +219,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (in_array($new_status, $valid_statuses)) {
             try {
                 update('orders', ['status' => $new_status, 'updated_at' => date('Y-m-d H:i:s')], 'id = ?', [$id]);
+
+                // Auto-update milestones when order is completed
+                if ($new_status === 'completed') {
+                    $now = date('Y-m-d H:i:s');
+                    $pdo = getDB();
+                    $pdo->prepare("UPDATE order_milestones SET status = 'completed', completed_at = ? WHERE order_id = ? AND status != 'completed'")->execute([$now, $id]);
+                }
+                // Auto-reset milestones to pending when order is cancelled
+                if ($new_status === 'cancelled') {
+                    getDB()->prepare("UPDATE order_milestones SET status = 'pending', completed_at = NULL WHERE order_id = ?")->execute([$id]);
+                }
+
                 flash('success', 'Status pesanan berhasil diperbarui.');
             } catch (Exception $e) {
                 flash('error', 'Gagal memperbarui status.');
@@ -438,9 +450,14 @@ require_once ADMIN_PATH . '/includes/sidebar.php';
                         </span>
                     </h5>
                     <!-- Add Milestone Button -->
+                    <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success" onclick="markAllMilestonesComplete()" title="Tandai semua tahapan selesai">
+                        <i class="fas fa-check-double me-1"></i>Semua Selesai
+                    </button>
                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMilestoneModal">
                         <i class="fas fa-plus me-1"></i>Tambah Milestone
                     </button>
+                    </div>
                 </div>
                 <div class="admin-card-body">
                     <!-- Progress Bar -->
@@ -831,6 +848,25 @@ function updateMilestoneStatus(milestoneId, newStatus, btn) {
         });
     });
 }
+
+    function markAllMilestonesComplete() {
+        if (!confirm('Tandai SEMUA milestone sebagai selesai?')) return;
+        const items = document.querySelectorAll('.milestone-item');
+        let done = 0;
+        items.forEach(item => {
+            const msId = item.dataset.id;
+            if (item.dataset.status !== 'completed') {
+                fetch('index.php?page=pesanan-detail&id=<?= $id ?>', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'},
+                    body: 'csrf_token=<?= urlencode($csrf) ?>&action=update_milestone_status&milestone_id=' + msId + '&status=completed'
+                }).then(r => r.json()).then(() => {
+                    done++;
+                    if (done === items.length) location.reload();
+                });
+            } else { done++; if (done === items.length) location.reload(); }
+        });
+    }
 
 // ---- WA Toast Notification ----
 function showWaToast(type, message) {
