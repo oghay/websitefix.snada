@@ -5,35 +5,43 @@
 $pageTitle = 'Blog & Panduan OJS – ' . getSetting('site_name', 'OJS Developer Indonesia');
 $siteUrl   = defined('SITE_URL') ? SITE_URL : '';
 
-$perPage     = 9;
-$currentPage = max(1, (int)($_GET['p'] ?? 1));
-$search      = sanitize($_GET['q'] ?? '');
+$perPage        = 9;
+$currentPage    = max(1, (int)($_GET['p'] ?? 1));
+$search         = sanitize($_GET['q'] ?? '');
+$activeCategory = sanitize($_GET['cat'] ?? '');
 
-// Count
+$categories = [
+    ''          => 'Semua',
+    'tips'      => 'Tips & Trik',
+    'tutorial'  => 'Tutorial',
+    'berita'    => 'Berita & Update',
+    'panduan'   => 'Panduan OJS',
+    'indeksasi' => 'Indeksasi Jurnal',
+    'lainnya'   => 'Lainnya',
+];
+
+// Build WHERE
+$where  = "status='published'";
+$params = [];
 if ($search) {
-    $total = (int) fetch(
-        "SELECT COUNT(*) as c FROM blog_posts WHERE status='published' AND title LIKE ?",
-        ['%' . $search . '%']
-    )['c'];
-} else {
-    $total = (int) fetch("SELECT COUNT(*) as c FROM blog_posts WHERE status='published'")['c'];
+    $where   .= " AND title LIKE ?";
+    $params[] = '%' . $search . '%';
 }
+if ($activeCategory) {
+    $where   .= " AND category = ?";
+    $params[] = $activeCategory;
+}
+
+$total = (int) fetch("SELECT COUNT(*) as c FROM blog_posts WHERE {$where}", $params)['c'];
 
 $pagination = getPagination($total, $perPage, $currentPage);
 
-// Fetch — inline LIMIT/OFFSET (safe: already cast to int)
 $limit  = (int) $pagination['per_page'];
 $offset = (int) $pagination['offset'];
-if ($search) {
-    $posts = fetchAll(
-        "SELECT * FROM blog_posts WHERE status='published' AND title LIKE ? ORDER BY created_at DESC LIMIT {$limit} OFFSET {$offset}",
-        ['%' . $search . '%']
-    );
-} else {
-    $posts = fetchAll(
-        "SELECT * FROM blog_posts WHERE status='published' ORDER BY created_at DESC LIMIT {$limit} OFFSET {$offset}"
-    );
-}
+$posts  = fetchAll(
+    "SELECT * FROM blog_posts WHERE {$where} ORDER BY created_at DESC LIMIT {$limit} OFFSET {$offset}",
+    $params
+);
 ?>
 
 <!-- Page Hero -->
@@ -78,6 +86,28 @@ if ($search) {
                 Menampilkan <?= $total ?> hasil untuk: <strong>"<?= htmlspecialchars($search) ?>"</strong>
             </p>
             <?php endif; ?>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-5 fade-in-up">
+            <?php foreach ($categories as $catKey => $catLabel): ?>
+            <?php
+                $catUrl    = $siteUrl . '/blog';
+                $catParams = [];
+                if ($search) $catParams[] = 'q=' . urlencode($search);
+                if ($catKey) $catParams[] = 'cat=' . urlencode($catKey);
+                if ($catParams) $catUrl .= '?' . implode('&', $catParams);
+                $isActiveCat = ($activeCategory === $catKey);
+            ?>
+            <a href="<?= $catUrl ?>"
+               class="btn <?= $isActiveCat ? 'btn-primary' : 'btn-outline-secondary' ?> btn-sm"
+               style="border-radius:50px;padding:6px 20px;font-size:13px;font-weight:<?= $isActiveCat ? '700' : '500' ?>;">
+                <?= htmlspecialchars($catLabel) ?>
+            </a>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- keep original closing div of search bar removed above -->
         </div>
 
         <!-- Posts Grid -->
