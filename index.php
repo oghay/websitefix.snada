@@ -29,6 +29,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Security headers
+header_remove('X-Powered-By');
+ini_set('display_errors', 0);
+error_reporting(0);
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 header('X-XSS-Protection: 1; mode=block');
