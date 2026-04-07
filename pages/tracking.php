@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         formData.append('tracking_code', code);
 
-        fetch(window.location.pathname, {
+        fetch(window.location.href, {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             body: formData
