@@ -58,9 +58,7 @@ $flashMessages = getFlash();
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     TOP NAVIGATION
-══════════════════════════════════════════ -->
+
 <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary); z-index: 1050;">
     <div class="container">
         <!-- Brand / Logo -->
@@ -163,6 +161,20 @@ $flashMessages = getFlash();
                 <?php endforeach; ?>
             </ul>
         </nav>
+  <script>
+  (function(){
+    window.addEventListener('scroll', function(){
+      var nav = document.getElementById('mainNav');
+      if (!nav) return;
+      if (window.scrollY > 10) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }, {passive: true});
+  })();
+  </script>
+  
         <div class="p-4 mt-auto" style="border-top:1px solid rgba(255,255,255,0.1);">
             <a href="<?= $siteUrl ?>/konsultasi"
                class="btn btn-accent d-block text-center fw-600"
