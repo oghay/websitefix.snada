@@ -17,6 +17,7 @@ $order = [
     'description'        => '',
     'notes'              => '',
     'status'             => 'pending',
+    'price'              => '',
 ];
 
 // Load existing order for edit
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order['description']        = trim($_POST['description'] ?? '');
     $order['notes']              = trim($_POST['notes'] ?? '');
     $order['status']             = sanitize($_POST['status'] ?? 'pending');
+    $order['price']              = (int) preg_replace('/[^0-9]/', '', $_POST['price'] ?? '0');
 
     // Validate
     $valid_services = ['setup_ojs','migrasi','kustomisasi','pelatihan','maintenance','indeksasi_doaj','indeksasi_sinta','lainnya'];
@@ -87,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'description'        => $order['description'],
                     'notes'              => $order['notes'],
                     'status'             => $order['status'],
+                    'price'              => $order['price'],
                     'updated_at'         => date('Y-m-d H:i:s'),
                 ], 'id = ?', [$id]);
 
@@ -107,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'description'        => $order['description'],
                     'notes'              => $order['notes'],
                     'status'             => $order['status'],
+                    'price'              => $order['price'],
                     'created_at'         => date('Y-m-d H:i:s'),
                     'updated_at'         => date('Y-m-d H:i:s'),
                 ]);
@@ -124,8 +128,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ]);
                 }
 
-                flash('success', 'Pesanan berhasil dibuat! Kode tracking: <strong>' . htmlspecialchars($tracking_code) . '</strong>');
-                redirect('index.php?page=pesanan-detail&id=' . $new_id);
+                // Send email notification to customer
+                  if (!empty($order['client_email'])) {
+                      $site_name = getSetting('site_name', 'OJS Developer Indonesia');
+                      $email_contact = getSetting('email_contact', 'noreply@ojsdeveloper.id');
+                      $service_label = $service_options[$order['service_type']] ?? $order['service_type'];
+                      $package_label = $package_options[$order['package_tier']] ?? $order['package_tier'];
+                      $to      = $order['client_email'];
+                      $subject = "[{$site_name}] Pesanan Anda Berhasil Dibuat – Kode: {$tracking_code}";
+                      $body    = "Yth. {$order['client_name']},\n\n";
+                      $body   .= "Terima kasih telah mempercayakan kebutuhan OJS Anda kepada kami.\n";
+                      $body   .= "Pesanan Anda telah berhasil dibuat dengan detail berikut:\n\n";
+                      $body   .= "Kode Tracking : {$tracking_code}\n";
+                      $body   .= "Layanan       : {$service_label}\n";
+                      $body   .= "Paket         : {$package_label}\n";
+                      $body   .= "Institusi     : {$order['client_institution']}\n";
+                      $body   .= "Status        : Menunggu\n\n";
+                      $body   .= "Pantau perkembangan pesanan di:\n";
+                      $body   .= getSetting('site_url', '') . "/tracking\n\n";
+                      $body   .= "Tim kami segera menghubungi Anda.\n";
+                      $body   .= "Salam,\n{$site_name}";
+                      $headers  = "From: {$site_name} <{$email_contact}>\r\n";
+                      $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+                      @mail($to, $subject, $body, $headers);
+                  }
+                  flash('success', 'Pesanan berhasil dibuat! Kode tracking: <strong>' . htmlspecialchars($tracking_code) . '</strong>');
+                  redirect('index.php?page=pesanan-detail&id=' . $new_id);
             }
         } catch (Exception $e) {
             $errors[] = 'Gagal menyimpan pesanan: ' . $e->getMessage();
@@ -277,6 +305,15 @@ require_once ADMIN_PATH . '/includes/sidebar.php';
                                     </option>
                                     <?php endforeach; ?>
                                 </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Harga / Nilai Pesanan (Rp)</label>
+                                <input type="text" name="price" class="form-control"
+                                       placeholder="0"
+                                       value="<?= number_format((int)($order['price'] ?? 0), 0, ',', '.') ?>"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                                       inputmode="numeric">
+                                <div class="form-text">Isi untuk mencatat pendapatan pesanan ini.</div>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Deskripsi Kebutuhan</label>
