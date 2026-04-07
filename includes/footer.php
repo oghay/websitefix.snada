@@ -139,13 +139,17 @@ $address        = getSetting('address', '');
 </footer>
 
 <!-- WhatsApp Floating Button -->
-<?php if (!empty($whatsappNumber)): ?>
-<a href="https://wa.me/<?= htmlspecialchars(preg_replace('/\D/', '', $whatsappNumber)) ?>?text=Halo%2C%20saya%20ingin%20konsultasi%20tentang%20layanan%20OJS"
+<?php
+$_waNum  = !empty($whatsappNumber) ? preg_replace('/\D/', '', $whatsappNumber) : '';
+$_waHref = !empty($_waNum)
+    ? 'https://wa.me/' . htmlspecialchars($_waNum) . '?text=Halo%2C%20saya%20ingin%20konsultasi%20tentang%20layanan%20OJS'
+    : (defined('SITE_URL') ? SITE_URL : '') . '/konsultasi';
+?>
+<a href="<?= $_waHref ?>"
    class="wa-float" target="_blank" rel="noopener" aria-label="Chat WhatsApp" title="Chat via WhatsApp">
     <i class="fab fa-whatsapp"></i>
     <span class="wa-float-tooltip">Chat WhatsApp</span>
 </a>
-<?php endif; ?>
 
 <!-- Bootstrap 5.3.3 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
