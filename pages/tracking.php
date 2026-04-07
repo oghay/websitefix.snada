@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <section class="section-padding bg-white">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-7 col-xl-6">
+            <div class="col-lg-8 col-xl-7">
                 <div class="tracking-search-card fade-in-up">
                     <div class="tracking-search-icon">
                         <i class="fas fa-shipping-fast"></i>
