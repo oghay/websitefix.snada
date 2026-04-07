@@ -64,7 +64,7 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip; /* does not break position:sticky */
 }
 
 body {
