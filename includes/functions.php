@@ -386,17 +386,22 @@ function getMilestoneStatusLabel(string $status): string {
  * Supported providers: fonnte, wablas, custom.
  * Returns ['success' => bool, 'message' => string]
  */
-function sendWhatsAppNotification(string $phone, string $message): array {
+function sendWhatsAppNotification(string $to, string $message): array {
+    $token = WA_API_TOKEN; // Use token from environment variable
+    if (empty($token)) {
+        return ["success" => false, "message" => "WhatsApp API Token not configured."];
+    }
+
     $enabled  = getSetting('wa_notif_enabled', '0');
     if ($enabled !== '1') {
         return ['success' => false, 'message' => 'Notifikasi WA dinonaktifkan.'];
     }
 
     $provider = getSetting('wa_api_provider', 'fonnte');
-    $token    = getSetting('wa_api_token', '');
-    if (empty($token)) {
-        return ['success' => false, 'message' => 'API token belum dikonfigurasi.'];
-    }
+    // $token is already defined from WA_API_TOKEN constant
+    // if (empty($token)) {
+    //     return ['success' => false, 'message' => 'API token belum dikonfigurasi.'];
+    // }
 
     // Normalize phone: remove spaces, dashes, leading 0, ensure starts with 62
     $phone = preg_replace('/[\s\-\(\)]/', '', $phone);

@@ -64,7 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 foreach ($settings_umum as $key => $value) {
-                    setSetting($key, $value);
+                    if ($key !== 'wa_api_token') { // Prevent storing sensitive token in DB
+                        setSetting($key, $value);
+                    }
                 }
                 flash('success', 'Pengaturan umum berhasil disimpan.');
                 redirect('index.php?page=pengaturan&tab=umum');
@@ -85,8 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Logo upload
         if (!empty($_FILES['logo']['name'])) {
             $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
-            if (!in_array($ext, ['jpg','jpeg','png','gif','webp','svg'])) {
-                $errors[] = 'Format logo tidak didukung.';
+       if (!in_array($ext, [\'jpg\',\'jpeg\',\'png\',\'gif\',\'webp\'])) {          $errors[] = 'Format logo tidak didukung.';
             } elseif ($_FILES['logo']['size'] > 2 * 1024 * 1024) {
                 $errors[] = 'Ukuran logo terlalu besar (maks 2MB).';
             } else {
@@ -123,7 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 foreach ($settings_tampilan as $key => $value) {
-                    setSetting($key, $value);
+                    if ($key !== 'wa_api_token') { // Prevent storing sensitive token in DB
+                        setSetting($key, $value);
+                    }
                 }
                 flash('success', 'Pengaturan tampilan berhasil disimpan.');
                 redirect('index.php?page=pengaturan&tab=tampilan');
@@ -138,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $wa_settings = [
             'wa_notif_enabled'  => isset($_POST['wa_notif_enabled']) ? '1' : '0',
             'wa_api_provider'   => sanitize($_POST['wa_api_provider'] ?? 'fonnte'),
-            'wa_api_token'      => trim($_POST['wa_api_token'] ?? ''),
+            // 'wa_api_token'      => trim($_POST['wa_api_token'] ?? ''), // Removed: now loaded from environment variable
             'wa_api_url'        => sanitize(trim($_POST['wa_api_url'] ?? '')),
             'wa_notif_template' => trim($_POST['wa_notif_template'] ?? ''),
         ];
@@ -157,7 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 foreach ($wa_settings as $key => $value) {
-                    setSetting($key, $value);
+                    if ($key !== 'wa_api_token') { // Prevent storing sensitive token in DB
+                        setSetting($key, $value);
+                    }
                 }
                 flash('success', 'Pengaturan notifikasi berhasil disimpan.');
                 redirect('index.php?page=pengaturan&tab=notifikasi');
@@ -219,7 +224,7 @@ $defaults = [
     'favicon_path'     => '',
     'wa_notif_enabled'  => '0',
     'wa_api_provider'   => 'fonnte',
-    'wa_api_token'      => '',
+            'wa_api_token'      => WA_API_TOKEN,
     'wa_api_url'        => '',
     'wa_notif_template' => '',
 ];
