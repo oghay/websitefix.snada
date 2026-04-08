@@ -74,7 +74,7 @@ body {
   line-height: 1.7;
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* overflow-x: hidden; removed to avoid breaking sticky */
 }
 
 h1, h2, h3, h4, h5 {
@@ -137,8 +137,9 @@ img { max-width: 100%; height: auto; }
    NAVBAR
    ────────────────────────────────────────── */
 #mainNav {
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
-  z-index: 1030;
+  transition: all 0.3s ease;
+  z-index: 1050;
+  top: 0;
 }
 #mainNav.scrolled {
   box-shadow: 0 2px 20px rgba(0,0,0,0.18);

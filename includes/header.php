@@ -59,7 +59,7 @@ $flashMessages = getFlash();
 <body>
 
 
-<nav id="mainNav" class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary); z-index: 1050;">
+<nav id="mainNav" class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm" style="background-color: var(--primary); z-index: 1050; top: 0;">
     <div class="container">
         <!-- Brand / Logo -->
         <a class="navbar-brand d-flex align-items-center gap-2" href="<?= $siteUrl ?>/">

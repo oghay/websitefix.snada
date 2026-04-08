@@ -21,12 +21,20 @@ $address        = getSetting('address', '');
             <div class="row g-4 g-lg-5">
                 <!-- Company Info -->
                 <div class="col-lg-4 col-md-6">
-                    <div class="footer-brand mb-3">
-                        <svg width="34" height="34" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
-                            <rect width="38" height="38" rx="9" fill="rgba(255,255,255,0.1)"/>
-                            <path d="M9 29V15.5L19 9l10 6.5V29H25V21H13v8H9z" fill="rgba(255,255,255,0.9)"/>
-                            <circle cx="19" cy="16" r="2.5" fill="#0d9488"/>
-                        </svg>
+                    <div class="footer-brand mb-3 d-flex align-items-center gap-2">
+                        <?php 
+                        $logoPath = getSetting('logo_path', '');
+                        if (!empty($logoPath)): ?>
+                            <img src="<?= $siteUrl ?>/assets/uploads/site/<?= htmlspecialchars($logoPath) ?>" 
+                                 alt="<?= htmlspecialchars($siteName) ?> logo" 
+                                 height="34" style="max-width:100px; object-fit:contain; filter: brightness(0) invert(1);">
+                        <?php else: ?>
+                            <svg width="34" height="34" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <rect width="38" height="38" rx="9" fill="rgba(255,255,255,0.1)"/>
+                                <path d="M9 29V15.5L19 9l10 6.5V29H25V21H13v8H9z" fill="rgba(255,255,255,0.9)"/>
+                                <circle cx="19" cy="16" r="2.5" fill="#0d9488"/>
+                            </svg>
+                        <?php endif; ?>
                         <span class="fw-700"><?= htmlspecialchars($siteName) ?></span>
                     </div>
                     <p class="footer-desc">
