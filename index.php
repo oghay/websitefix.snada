@@ -11,7 +11,7 @@ if (!file_exists(__DIR__ . '/config.php')) {
 }
 
 // Load configuration and core includes
-require_once __DIR__ . '/config.php';
+// require_once __DIR__ . '/config.php'; // This will be created by install.php
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
