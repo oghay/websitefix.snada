@@ -1,0 +1,6 @@
+config.php
+assets/uploads/*
+!assets/uploads/.gitkeep
+node_modules/
+.DS_Store
+.env
